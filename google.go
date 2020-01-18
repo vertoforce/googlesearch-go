@@ -68,6 +68,7 @@ func parse(body io.ReadCloser) ([]Result, error) {
 	results := []Result{}
 
 	doc.Find("a").Each(func(i int, s *goquery.Selection) {
+		// TODO: Chrome apparently only sends "ping" with a chrome user agent, use different method
 		googlePath, exists := s.Attr("ping")
 		if !exists {
 			return
