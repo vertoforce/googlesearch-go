@@ -2,13 +2,30 @@
 
 This library fetches google results programmatically
 
+## Usage
+
+```go
+search := Search{
+    Q: "Test",
+}
+
+results, _ := Query(context.Background(), &search)
+if len(results) > 0 {
+    fmt.Println(results[0].Title)
+}
+
+// Output: Speedtest by Ookla - The Global Broadband Speed Test
+```
+
 ## How it works
 
-Simply, it makes a request to good (`https://google.com/search?q=`) with the search query.  However there's some interesting "gotchas" to be aware of.
-First of all, when making a request from a Chrome user-agent, it changes the HTML it returns.  It instead returns `ping=` attributes that we look for.
-Right now the code only supports the chrome user-agent response, but a TODO is to add support for the other responses, making it so we can send more user agents and more requests.
+It makes a request to google (`https://google.com/search?q=`) with the search query.  It uses a random chrome user-agent.
 
-Once we get the HTML, we parse out the urls, titles, description, etc.
+It loops over each `div .g` divs with the following jquery parse commands:
+
+- Title: `Find("a").Find('h3")`
+- Description: `Find("div .s").Find("div:has(:not(div))")`.
+- URL: `Find("a").Attr("href")`
 
 ## Why
 
