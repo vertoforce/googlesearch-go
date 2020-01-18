@@ -15,7 +15,7 @@ import (
 )
 
 const (
-	baseURL = "https://google.com/search?q=%s"
+	baseURL = "https://google.com/search?q=%s&num=%d"
 )
 
 var (
@@ -26,6 +26,8 @@ var (
 type Search struct {
 	// Query string
 	Q string
+	// Number of results per page
+	Num int
 	// TryHard if sent to true will keep trying proxies until we get a 200 OK response.
 	// It uses the proxier library (github.com/vertoforce/proxier)
 	TryHard bool
@@ -46,7 +48,8 @@ func Query(ctx context.Context, search *Search) ([]Result, error) {
 	fakeUserAgent := browser.Chrome()
 
 	// Build request
-	req, err := http.NewRequestWithContext(ctx, "GET", fmt.Sprintf(baseURL, url.QueryEscape(search.Q)), nil)
+	urlString := fmt.Sprintf(baseURL, url.QueryEscape(search.Q), search.Num)
+	req, err := http.NewRequestWithContext(ctx, "GET", urlString, nil)
 	if err != nil {
 		return nil, err
 	}
