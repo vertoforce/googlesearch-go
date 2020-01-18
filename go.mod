@@ -1,4 +1,4 @@
-module googlesearch
+module github.com/vertoforce/googlesearch-go
 
 go 1.13
 
