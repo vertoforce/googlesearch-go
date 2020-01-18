@@ -54,3 +54,4 @@ All the go search libraries I found were one of the following
 - https://github.com/nakabonne/WebCrawlerForSerps
 - https://github.com/keyle/googlesearch
 - https://github.com/WithGJR/google-search-parser
+- https://github.com/captainju/goGoogleSearch
