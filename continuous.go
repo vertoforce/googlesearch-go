@@ -28,6 +28,11 @@ func QueryContinuous(ctx context.Context, search *Search, WaitTimeBetweenRequest
 				return
 			}
 
+			// Check if no more results
+			if len(thisResults) == 0 {
+				return
+			}
+
 			// Send off results
 			for _, result := range thisResults {
 				select {
