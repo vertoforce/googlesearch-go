@@ -1,5 +1,8 @@
 # Google Search Go
 
+[![Go Report Card](https://goreportcard.com/badge/github.com/vertoforce/googlesearch-go)](https://goreportcard.com/report/github.com/vertoforce/googlesearch-go)
+[![Documentation](https://godoc.org/github.com/vertoforce/googlesearch-go?status.svg)](https://godoc.org/github.com/vertoforce/googlesearch-go)
+
 This library fetches google results programmatically
 
 ## Usage
