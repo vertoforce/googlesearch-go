@@ -8,7 +8,6 @@ import (
 	"net/http"
 	"net/url"
 	"regexp"
-	"strings"
 
 	browser "github.com/EDDYCJY/fake-useragent"
 	"github.com/PuerkitoBio/goquery"
@@ -92,71 +91,6 @@ func parse(body io.ReadCloser) ([]Result, error) {
 		}
 
 		results = append(results, result)
-	})
-
-	return results, nil
-}
-
-func parsePingMethod(body io.ReadCloser) ([]Result, error) {
-	defer body.Close()
-
-	doc, err := goquery.NewDocumentFromReader(body)
-	if err != nil {
-		return nil, err
-	}
-
-	results := []Result{}
-
-	doc.Find("a").Each(func(i int, s *goquery.Selection) {
-		// TODO: Chrome apparently only sends "ping" with a chrome user agent, use different method
-		googlePath, exists := s.Attr("ping")
-		if !exists {
-			return
-		}
-
-		// Parse the URL parameters
-		vals, err := url.ParseQuery(googlePath)
-		if err != nil {
-			return
-		}
-
-		// TODO: Add separate entry for SEO links on same entry
-		// TODO: Add cached page link
-
-		// Find the "url" parameter
-		if URLs, ok := vals["url"]; ok {
-			for _, URL := range URLs {
-
-				// Ignore google URLs, they usually are just buttons on the page or something
-				if googleRegex.MatchString(URL) {
-					return
-				}
-
-				// Ignore URLs starting with / or "#"
-				if strings.Index(URL, "/") == 0 || URL == "#" {
-					return
-				}
-
-				// Get the heading and replace extra spaces
-				title := s.Find("h3").Text()
-				// replace extra spaces and newlines
-				title = regexp.MustCompile(`\s+`).ReplaceAllString(title, " ")
-				title = strings.ReplaceAll(title, "\n", "")
-
-				// Description is the span that does not have the link (cached link)
-				description := s.Parent().Parent().Parent().Find("span:not(:has(a))").Text()
-				// replace extra spaces and newlines
-				description = regexp.MustCompile(`\s+`).ReplaceAllString(description, " ")
-				description = strings.ReplaceAll(description, "\n", "")
-
-				result := Result{
-					URL:         URL,
-					Title:       title,
-					Description: description,
-				}
-				results = append(results, result)
-			}
-		}
 	})
 
 	return results, nil
