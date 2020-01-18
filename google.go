@@ -79,6 +79,9 @@ func parse(body io.ReadCloser) ([]Result, error) {
 			return
 		}
 
+		// TODO: Add separate entry for SEO links on same entry
+		// TODO: Add cached page link
+
 		// Find the "url" parameter
 		if URLs, ok := vals["url"]; ok {
 			for _, URL := range URLs {
@@ -94,13 +97,13 @@ func parse(body io.ReadCloser) ([]Result, error) {
 				}
 
 				// Get the heading and replace extra spaces
-				title := s.Find("[role='heading']").Text()
+				title := s.Find("h3").Text()
 				// replace extra spaces and newlines
 				title = regexp.MustCompile(`\s+`).ReplaceAllString(title, " ")
 				title = strings.ReplaceAll(title, "\n", "")
 
-				// Get description is probably the div that has "..." but does NOT have the > character, and does not have child divs
-				description := s.Parent().Parent().Parent().Find("div:contains('...'):not(:contains('›')):not(:has(div))").Text()
+				// Description is the span that does not have the link (cached link)
+				description := s.Parent().Parent().Parent().Find("span:not(:has(a))").Text()
 				// replace extra spaces and newlines
 				description = regexp.MustCompile(`\s+`).ReplaceAllString(description, " ")
 				description = strings.ReplaceAll(description, "\n", "")
