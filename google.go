@@ -68,44 +68,39 @@ func parse(body io.ReadCloser) ([]Result, error) {
 	results := []Result{}
 
 	doc.Find("a").Each(func(i int, s *goquery.Selection) {
-		googlePath, exists := s.Attr("ping")
+		URL, exists := s.Attr("href")
 		if !exists {
 			return
 		}
-		// Parse the URL parameters
-		vals, err := url.ParseQuery(googlePath)
-		if err != nil {
+
+		// Ignore google URLs, they usually are just buttons on the page or something
+		if googleRegex.MatchString(URL) {
 			return
 		}
 
-		// Find the "url" parameter
-		if URLs, ok := vals["url"]; ok {
-			for _, URL := range URLs {
-				// Ignore google URLs, they usually are just buttons on the page or something
-				if googleRegex.MatchString(URL) {
-					continue
-				}
-
-				// Get the heading and replace extra spaces
-				title := s.Find("[role='heading']").Text()
-				// replace extra spaces and newlines
-				title = regexp.MustCompile(`\s+`).ReplaceAllString(title, " ")
-				title = strings.ReplaceAll(title, "\n", "")
-
-				// Get description is probably the div that has "..." but does NOT have the > character, and does not have child divs
-				description := s.Parent().Parent().Parent().Find("div:contains('...'):not(:contains('›')):not(:has(div))").Text()
-				// replace extra spaces and newlines
-				description = regexp.MustCompile(`\s+`).ReplaceAllString(description, " ")
-				description = strings.ReplaceAll(description, "\n", "")
-
-				result := Result{
-					URL:         URL,
-					Title:       title,
-					Description: description,
-				}
-				results = append(results, result)
-			}
+		// Ignore URLs starting with / or "#"
+		if strings.Index(URL, "/") == 0 || URL == "#" {
+			return
 		}
+
+		// Get the heading and replace extra spaces
+		title := s.Find("[role='heading']").Text()
+		// replace extra spaces and newlines
+		title = regexp.MustCompile(`\s+`).ReplaceAllString(title, " ")
+		title = strings.ReplaceAll(title, "\n", "")
+
+		// Get description is probably the div that has "..." but does NOT have the > character, and does not have child divs
+		description := s.Parent().Parent().Parent().Find("div:contains('...'):not(:contains('›')):not(:has(div))").Text()
+		// replace extra spaces and newlines
+		description = regexp.MustCompile(`\s+`).ReplaceAllString(description, " ")
+		description = strings.ReplaceAll(description, "\n", "")
+
+		result := Result{
+			URL:         URL,
+			Title:       title,
+			Description: description,
+		}
+		results = append(results, result)
 	})
 
 	return results, nil

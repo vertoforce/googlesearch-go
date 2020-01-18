@@ -17,7 +17,7 @@ func TestQueryLive(t *testing.T) {
 }
 
 func TestQueryLocal(t *testing.T) {
-	localFile, err := os.Open("out.html")
+	localFile, err := os.Open("out2.html")
 	if err != nil {
 		t.Error(err)
 		return
