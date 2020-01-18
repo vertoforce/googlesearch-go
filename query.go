@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"net/http"
 	"net/url"
 	"regexp"
@@ -92,8 +91,6 @@ func parse(body io.ReadCloser) ([]Result, error) {
 	if err != nil {
 		return nil, err
 	}
-	html, err := doc.Html()
-	ioutil.WriteFile("out2.html", []byte(html), 0644)
 
 	results := []Result{}
 
