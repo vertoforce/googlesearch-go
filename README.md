@@ -8,16 +8,21 @@ This library fetches google results programmatically
 ## Usage
 
 ```go
-search := Search{
-    Q: "Test",
-}
-
-results, _ := Query(context.Background(), &search)
+results, _ := Query(context.Background(), &Search{Q: "Test"})
 if len(results) > 0 {
     fmt.Println(results[0].Title)
 }
 
 // Output: Speedtest by Ookla - The Global Broadband Speed Test
+```
+
+### Usage with TryHard
+
+Setting `TryHard=true` causes the query to keep trying proxies to get a `200 OK`.
+It uses the [proxier library](https://github.com/vertoforce/proxier).
+
+```go
+results, _ := Query(context.Background(), &Search{Q: "Test", TryHard: true})
 ```
 
 ## How it works

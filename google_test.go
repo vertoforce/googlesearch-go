@@ -16,6 +16,16 @@ func TestQueryLive(t *testing.T) {
 	}
 }
 
+func TestQueryLiveTryHard(t *testing.T) {
+	results, err := Query(context.Background(), &Search{Q: `Test`, TryHard: true})
+	if err != nil {
+		t.Error(err)
+	}
+	if len(results) == 0 {
+		t.Errorf("No results")
+	}
+}
+
 func TestQueryLocal(t *testing.T) {
 	localFile, err := os.Open("out2.html")
 	if err != nil {
