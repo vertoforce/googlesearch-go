@@ -25,6 +25,17 @@ It uses the [proxier library](https://github.com/vertoforce/proxier).
 results, _ := Query(context.Background(), &Search{Q: "Test", TryHard: true})
 ```
 
+### Continuous results (going through google search result pages)
+
+The library also supports navigating through google pages to get more results.  Make a continuous query like the following:
+
+```go
+results := QueryContinuous(context.Background(), &Search{Q: "Test"}, time.Second*10, time.Second*5)
+for result := range results {
+    fmt.Println(result.Title)
+}
+```
+
 ## How it works
 
 It makes a request to google (`https://google.com/search?q=`) with the search query.  It uses a random chrome user-agent.

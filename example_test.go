@@ -3,6 +3,7 @@ package google
 import (
 	"context"
 	"fmt"
+	"time"
 )
 
 func ExampleQuery() {
@@ -21,4 +22,11 @@ func ExampleQuery_tryHard() {
 	}
 
 	// Output: Speedtest by Ookla - The Global Broadband Speed Test
+}
+
+func ExampleQueryContinuous() {
+	results := QueryContinuous(context.Background(), &Search{Q: "Test"}, time.Second*10, time.Second*5)
+	for result := range results {
+		fmt.Println(result.Title)
+	}
 }
