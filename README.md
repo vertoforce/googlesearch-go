@@ -36,6 +36,8 @@ for result := range results {
 }
 ```
 
+Note that google usually only returns approximately the first ~400 results, so it can not continue beyond that.
+
 ## How it works
 
 It makes a request to google (`https://google.com/search?q=`) with the search query.  It uses a random chrome user-agent.
