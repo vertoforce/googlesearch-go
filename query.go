@@ -93,31 +93,12 @@ func parse(body io.ReadCloser) ([]Result, error) {
 	}
 
 	results := []Result{}
-
-	doc.Find("div .g").Each(func(i int, s *goquery.Selection) {
-		link, exists := s.Find("a").Attr("href")
-		if !exists {
-			return
+	for _, parserMethod := range defaultParserFunctions {
+		results = parserMethod(doc)
+		if len(results) != 0 {
+			return results, nil
 		}
-
-		// Title
-		title := s.Find("a").Find("h3").Text()
-		// Remove extra spacing
-		title = regexp.MustCompile(`\s+`).ReplaceAllString(title, " ")
-
-		// Description
-		description := s.Find("div .s").Find("div:has(:not(div))").Text()
-		// Remove extra spacing
-		description = regexp.MustCompile(`\s+`).ReplaceAllString(description, " ")
-
-		result := Result{
-			Title:       title,
-			URL:         link,
-			Description: description,
-		}
-
-		results = append(results, result)
-	})
+	}
 
 	return results, nil
 }
