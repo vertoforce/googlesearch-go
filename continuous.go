@@ -16,7 +16,7 @@ func QueryContinuous(ctx context.Context, search *Search, WaitTimeBetweenRequest
 		defer close(results)
 
 		// Loop over pages however long we can
-		var curResultNum = search.Num * search.Start
+		var curResultNum = search.Start
 		for {
 			s := *search
 			s.Start = curResultNum
